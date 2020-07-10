@@ -2,15 +2,12 @@
     "name": "NOFISH Extention CDAP",
     "version": "1.0",
     "description": "This works hard to prevent you from being fished",
+    "options_page":"option.html",
     "permissions": [
-        "webNavigation",
-        "activeTab",
-        "notifications",
-        "debugger",
-        "background",
+        "tabs",
+        "webRequest",
         "webRequestBlocking",
-        "declarativeContent",
-        "storage"
+        "<all_urls>"
     ],
     "background": {
         "scripts": [
