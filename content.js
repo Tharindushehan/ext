@@ -1,19 +1,22 @@
-chrome.runtime.onMessage.addListener(function(obj, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((obj, sender, sendResponse) => {
 
 
     switch (obj.cmd) {
         case "getInputFeilds":
             sendResponse(getInputFeilds());
             break;
-        case "showAlert":
+        case "showMessage":
+
             showAlert();
             sendResponse('added');
             break;
         case "hideAlert":
+
             hideAlert();
             sendResponse('hidden');
             break;
         default:
+            alert("Sending default")
             sendResponse(null);
     }
 });

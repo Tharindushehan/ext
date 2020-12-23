@@ -1,18 +1,17 @@
-const allBookMarks = [];
-
 const showAlerts = () => {
 
 
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 
-        chrome.tabs.sendMessage(tabs[0].id, { cmd: "showAlert" }, function(obj) {
-            console.log('Show Alert', obj);
-        });
-
 
         setTimeout(function() {
+            chrome.tabs.sendMessage(tabs[0].id, { cmd: "showMessage" }, function(obj) {
+                // console.log('Show Alert', obj);
+            });
+        }, 1000)
+        setTimeout(function() {
             chrome.tabs.sendMessage(tabs[0].id, { cmd: "hideAlert" }, function(obj) {
-                console.log('Hide Alert', obj);
+                // console.log('Hide Alert', obj);
             });
         }, 5000);
     });
@@ -22,14 +21,7 @@ const showAlerts = () => {
 
 
 
-chrome.bookmarks.getTree((x) => {
-    let bookmarkTypes = x[0].children;
-    bookmarkTypes.map(type => {
-        type.children.map(bb => {
-            allBookMarks.push(bb.url);
-        })
-    })
-})
+
 
 chrome.runtime.onInstalled.addListener(function() {
     chrome.storage.sync.set({ color: '#3aa757' }, function() {
@@ -48,81 +40,88 @@ chrome.runtime.onInstalled.addListener(function() {
 chrome.webNavigation.onBeforeNavigate.addListener(function(e) {
 
 
-    showAlerts();
-    let x = IsLegitimateUrl(e.url, allBookMarks);
-    console.log(x);
-    if (!x) {
-        showAlerts();
-    }
+
+    IsLegitimateUrl(e.url).then(x => {
+
+        if (!x) {
+            showAlerts();
+        }
+    });
 
 
-    // // if (e.url !== 'about:blank' && !(allBookMarks.indexOf(e.url) > -1)) {
-    // //     let protocol = e.url.split(":")[0];
-    // //     //showAlerts(e.url, protocol);
 
-    // // }
+
 });
 
 const nodeServer = "http://localhost:5000";
 
 
-async function IsLegitimateUrl(url, bookmarks) {
 
 
+function IsLegitimateUrl(url) {
 
-    if (url === 'about:blank') {
-        return true;
-    }
+    return new Promise(async function(resolve, reject) {
+        if (url === 'about:blank') {;
+            resolve(true);
+        }
 
-    if (isNetworkTrusted(url) || isDnsTrusted()) {
+        if (isNetworkTrusted(url) || isDnsTrusted()) {
 
-        // if (isProtocolHtp(url)) {
-        //     console.log("Protocolissue", url)
-        //     return true;
-        // } else {
-        if (isUrlBookMarked(url, bookmarks)) {
-            return true;
-        } else {
-            if (isUrlWhitelisted(url)) {
-                return true;
+            // if (isProtocolHtp(url)) {
+            //     console.log("Protocolissue", url)
+            //     return true;
+            // } else {
+
+            let bookmarkAvailable = await isUrlBookMarked(url);
+            if (bookmarkAvailable) {
+                resolve(true);
+                // return true;
             } else {
-
-                let x = await isUrlBLacklisted(url);
-                if (x) {
-                    return false;
-
+                if (isUrlWhitelisted(url)) {
+                    resolve(true);
                 } else {
 
-                    if (isCertificateValid(url)) {
-                        // alert("certificate valid");
-                        return true;
-                    } else {
-                        if (isUrlLengthValid()) {
-                            if (isUrlContainsSymbols(url)) {
-                                // alert("validissue issue");
-                                return false;
-                            } else {
-                                if (isUrlDetectedFishingFromML(url)) {
-                                    // alert("ML issue");
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            }
-                        } else {
-                            // alert("urlissue")
-                            return false;
-                        }
-                    }
+                    let x = await isUrlBLacklisted(url);
+                    console.log(x);
+                    if (x) {
+                        resolve(false);
 
+                    } else {
+
+                        if (isCertificateValid(url)) {
+                            // alert("certificate valid");
+                            resolve(true);
+                        } else {
+                            if (isUrlLengthValid()) {
+                                if (isUrlContainsSymbols(url)) {
+                                    // alert("validissue issue");
+                                    resolve(false);
+                                } else {
+                                    if (isUrlDetectedFishingFromML(url)) {
+                                        // alert("ML issue");
+                                        resolve(false);
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }
+                            } else {
+                                // alert("urlissue")
+                                resolve(false);
+                            }
+                        }
+
+                    }
                 }
+                // }
             }
-            // }
+        } else {
+            // alert("legitimate issue");
+            resolve(false);
         }
-    } else {
-        // alert("legitimate issue");
-        return false;
-    }
+    })
+
+
+
 
 }
 
@@ -139,8 +138,30 @@ function isNetworkTrusted() {
 //     return protocol === "http"
 // }
 
-function isUrlBookMarked(url, bookmarks) {
-    return bookmarks.indexOf(url) > -1;
+
+function loadBookmarks() {
+    return new Promise((resolve, reject) => {
+        const allBookMarks = []
+        chrome.bookmarks.getTree((x) => {
+            let bookmarkTypes = x[0].children;
+            bookmarkTypes.map(type => {
+                type.children.map(bb => {
+                    allBookMarks.push(bb.url);
+                })
+            })
+            resolve(allBookMarks);
+        })
+    })
+}
+
+async function isUrlBookMarked(url) {
+
+    let data = await loadBookmarks();
+    console.log(data.indexOf(url));
+    return data.indexOf(url) > -1;
+
+
+
 }
 
 function isUrlWhitelisted(url) {
@@ -156,7 +177,7 @@ async function isUrlBLacklisted(url) {
 
     for (let key in data) {
         let u = data[key]
-        if (u.hostname === hostName) {
+        if (hostName.includes(u.hostname)) {
 
             return true;
         }
