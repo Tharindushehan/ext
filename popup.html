@@ -4,66 +4,106 @@
 <head>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom/popup.css" rel="stylesheet">
+
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
     <!-- <script type="application/javascript" charset="utf-8" src="popup.js"></script> -->
 </head>
 
 <body style="width: 500px;">
 
-    <button class="btn btn-primary" id="inputBoxes">Get input boxes</button>
+    <div class="container">
+        <div id="extension" class="extension">
 
-    <button class="btn btn-danger" id="reportBlacklist">Report to BlackList</button>
 
-    <div class="container" align="center">
+            <div class="container" align="center">
 
-        <h2 class="text-primary text-center">No Phish</h1>
+                <h2 class="text-primary text-center">No Phish</h1>
 
-            <img id="country" width="80px" src="https://www.countryflags.io/US/flat/64.png"
-                style="vertical-align: middle;">
-            <h5 id="country-name" class="text-center"></h5>
-    </div>
-    <div class="card border-primary mb-3">
-        <div class="card-header text-center bg-success text-white">Host Name</div>
-        <div class=" text-primary">
+                    <img id="country" width="80px" src="https://www.countryflags.io/US/flat/64.png" style="vertical-align: middle;">
+                    <h5 id="country-name" class="text-center"></h5>
+            </div>
+            <div class="card border-primary mb-3">
+                <div class="card-header text-center bg-success text-white">Host Name</div>
+                <div class=" text-primary">
 
-            <p class="text-center" id="hostname"></p>
+                    <p class="text-center" id="hostname"></p>
+
+                </div>
+            </div>
+
+            <div class="card border-primary mb-3">
+                <div class="card-header text-center bg-success text-white">IP Address</div>
+                <div class=" text-primary">
+
+                    <p class="text-center" id="ipaddress"></p>
+
+                </div>
+            </div>
+
+            <div class="card border-primary mb-3">
+                <div class="card-header text-center bg-success text-white">Created Date</div>
+                <div class=" text-primary">
+
+                    <p class="text-center" id="created"></p>
+
+                </div>
+            </div>
+
+            <div class="card border-primary mb-3">
+                <div class="card-header text-center bg-success text-white">Expire Date</div>
+                <div class="text-primary">
+                    <p class="text-center" id="expired"></p>
+
+                </div>
+            </div>
+
+            <button class="btn btn-block btn-warning" id="seemorebtn">See More Options</button>
+
+            <div id="moreinfo">
+                <button class="btn btn-block btn-primary" id="inputBoxes">Get input boxes</button>
+
+                <button class="btn btn-block btn-danger" id="reportBlacklist">Report to BlackList</button>
+
+                <button class="btn btn-block btn-success" id="reportWhitelist">Report to WhiteList</button>
+
+                <button class="btn btn-block btn-success" id="more-details">More Details</button>
+
+                <button class="btn btn-block btn-success" id="screen-shot">Screenshot</button>
+
+                <button class="btn btn-block btn-success" id="check-url">Check URL</button>
+            </div>
 
         </div>
-    </div>
-
-    <div class="card border-primary mb-3">
-        <div class="card-header text-center bg-success text-white">IP Address</div>
-        <div class=" text-primary">
-
-            <p class="text-center" id="ipaddress"></p>
-
+        <div id="loading" class="loading">
+            <div id="loading-wrapper">
+                <div id="loading-text">LOADING</div>
+                <div id="loading-content"></div>
+            </div>
         </div>
-    </div>
-
-    <div class="card border-primary mb-3">
-        <div class="card-header text-center bg-success text-white">Created Date</div>
-        <div class=" text-primary">
-
-            <p class="text-center" id="created"></p>
-
-        </div>
-    </div>
-
-    <div class="card border-primary mb-3">
-        <div class="card-header text-center bg-success text-white">Expire Date</div>
-        <div class="text-primary">
-            <p class="text-center" id="expired"></p>
-
-        </div>
-    </div>
-
 
     </div>
 
-    <script type="text/javascript" src="popup.js"></script>
+
+
+
+
+
+
+
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-storage.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script type="text/javascript" src="popup.js"></script>
+
 
 </body>
 

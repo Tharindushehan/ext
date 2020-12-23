@@ -1,0 +1,1 @@
+exports.nodeServer = "http://localhost:5000";

@@ -17,21 +17,20 @@
     ],
     "background": {
         "scripts": [
-            "background.js"           
+            "background.js"
         ],
         "persistent": false
     },
-    "content_scripts": [
-        {
-            "matches": [
-                "http://*/*",
-                "https://*/*"
-            ],
-            "js": [
-                "content.js"
-            ]
-        }
-    ],
+    "content_security_policy": "script-src 'self' https://www.gstatic.com ; object-src 'self'",
+    "content_scripts": [{
+        "matches": [
+            "http://*/*",
+            "https://*/*"
+        ],
+        "js": [
+            "content.js"
+        ]
+    }],
     "page_action": {
         "default_popup": "popup.html",
         "default_icon": {
